@@ -1,0 +1,22 @@
+<p> it works</p>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Montant Net</th>
+              <th>Montant Brut</th>
+              <th>Date de Demande de prime </th>
+              <th> Demandé par le salarié </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let demande of demandes | async">
+              <td>{{demande.montant_net}}</td>
+              <td>{{demande.montant_brut}}</td>
+              <td>{{demande.date_debut}}</td>
+              <td> <p>{{demande.salarie.nom_salarie}} </p><p>{{demande.salarie.prenom_salarie}} </p></td>
+              <td><button class="w3-button w3-green">Accepter</button></td>
+              <td><button class="w3-button w3-red">Refuser</button></td>
+            </tr>
+            </tbody>
+          </table>
+

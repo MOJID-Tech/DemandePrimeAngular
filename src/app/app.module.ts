@@ -6,11 +6,12 @@ import { AppComponent } from './app.component';
 import { HelloWorldComponent } from './hello-world/hello-world.component';
 import { MenuComponent } from './menu/menu.component';
 import { LoginComponent } from './login/login.component';
-
 import { FormsModule } from '@angular/forms';
 import { LogoutComponent } from './logout/logout.component';
 import { HttpInterceptorService } from './httpInterceptor.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ListePrimeComponent } from './liste-prime/liste-prime.component';
+import { SlidemenuComponent } from './slidemenu/slidemenu.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,10 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
     HelloWorldComponent,
     MenuComponent,
     LoginComponent,
-    LogoutComponent
+    LogoutComponent,
+    ListePrimeComponent,
+
+    SlidemenuComponent
   ],
   imports: [
     BrowserModule,

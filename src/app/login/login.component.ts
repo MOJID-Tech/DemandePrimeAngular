@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   successMessage: string;
   invalidLogin = false;
   loginSuccess = false;
-
+/*
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -33,6 +33,14 @@ export class LoginComponent implements OnInit {
     }, () => {
       this.invalidLogin = true;
       this.loginSuccess = false;
-    });      
+    });
   }
+
+
+
+*/
+
+constructor() {}
+ngOnInit() {}
+
 }

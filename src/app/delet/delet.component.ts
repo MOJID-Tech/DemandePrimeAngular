@@ -8,7 +8,7 @@ import { DeletService } from '../delet.service';
   styleUrls: ['./delet.component.css']
 })
 export class DeletComponent implements OnInit {
-
+/*
   message: string;
 
   constructor(private deletService: DeletService) { }
@@ -20,5 +20,8 @@ export class DeletComponent implements OnInit {
       this.message = result.content;
     });
   }
+*/
 
+constructor() {}
+ngOnInit() {}
 }
