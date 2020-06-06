@@ -22,7 +22,7 @@ public class EtatDemande implements Serializable {
    @ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
     @JoinColumn(name="etat_id")
     private Etat etat;
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
     @JoinColumn(name="demande_id")
 
     private Demande demande;

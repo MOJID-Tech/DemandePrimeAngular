@@ -3,6 +3,8 @@ package com.gta.remuniration.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -14,6 +16,7 @@ import java.util.Set;
 public class Salarie  implements Serializable {
     @Id
     @GeneratedValue
+
     private Long id;
     private String nom_salarie;
     private String prenom_salarie;

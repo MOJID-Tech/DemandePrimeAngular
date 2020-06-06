@@ -38,11 +38,13 @@ public class Demande implements Serializable {
     private Date date_debut;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_fin;
-
-    @OneToMany(mappedBy = "demande" , fetch=FetchType.LAZY,cascade=CascadeType.ALL)
     @Transient
+    @OneToMany(mappedBy = "demande" , fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+
     private Set<EtatDemande> etatDemande = new HashSet<EtatDemande>();
-    @ManyToOne(cascade=CascadeType.ALL)
+
+    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
     @JoinColumn(name = "salarie_id")
     private Salarie salarie;
 
