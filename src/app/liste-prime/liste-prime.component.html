@@ -1,22 +1,64 @@
-<p> it works</p>
+<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+		$(document).ready(function(){
+			$(".hamburger").click(function(){
+			   $(".wrapper").toggleClass("collapse");
+			});
+		});
+	</script>
+
+<div class="wrapper">
+  <app-slidemenu></app-slidemenu>
+  <div class="main_container">
+    <div class="item">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h2 class="fonrecri" >La liste des demande des primes </h2>
+          <br><br>
+        </div>
+        <div class="panel-body">
           <table class="table table-striped">
             <thead>
             <tr>
               <th>Montant Net</th>
               <th>Montant Brut</th>
-              <th>Date de Demande de prime </th>
-              <th> Demandé par le salarié </th>
+              <th>Prime Maximale</th>
+              <th>Prime Proposé par Manager</th>
+              <th>Date de demande</th>
+              <th>Demandé par  </th>
+              <th> Traitements </th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let demande of demandes | async">
               <td>{{demande.montant_net}}</td>
               <td>{{demande.montant_brut}}</td>
+               <td>{{demande.prime_max}}</td>
+               <td>{{demande.prime_max}}</td>
               <td>{{demande.date_debut}}</td>
+
+
               <td> <p>{{demande.salarie.nom_salarie}} </p><p>{{demande.salarie.prenom_salarie}} </p></td>
-              <td><button class="w3-button w3-green">Accepter</button></td>
-              <td><button class="w3-button w3-red">Refuser</button></td>
+              <td>
+             <button >Modifier</button> 
+             <button class="w3-button w3-green">Accepter</button>
+             <button class="w3-button w3-red">Refuser</button>
+            </td>
             </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+
+
+</div>
 
