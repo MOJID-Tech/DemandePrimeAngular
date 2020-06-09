@@ -25,8 +25,7 @@ public class UserController {
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<User> authenticate(
-            @RequestParam(required = false) String login,
-            @RequestParam(required = false) String password) {
+            @RequestParam String login, @RequestParam String password) {
 
         return ResponseEntity.status(HttpStatus.OK).body(Service.authenticate(login,password));
     }

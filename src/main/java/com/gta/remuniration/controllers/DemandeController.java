@@ -15,8 +15,7 @@ public class DemandeController  {
     private DemandeService service;
     @PostMapping
    //@RequestMapping(value="/demande",method=RequestMethod.POST)
-    public ResponseEntity<Demande> create(@RequestParam(required = false) String MN,
-                                          @RequestParam(required = false) String login ) {
+    public ResponseEntity<Demande> create(@RequestParam String MN,  @RequestParam String login ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(MN ,login));
     }
 
