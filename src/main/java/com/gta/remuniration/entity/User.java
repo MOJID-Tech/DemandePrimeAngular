@@ -1,7 +1,7 @@
 package com.gta.remuniration.entity;
 
 
-
+import com.gta.remuniration.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;

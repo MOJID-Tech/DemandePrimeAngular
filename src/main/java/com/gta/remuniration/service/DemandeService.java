@@ -37,7 +37,8 @@ public class DemandeService {
     }*/
     //create
    @Transactional(readOnly = false)
-    public Demande create(Double Montant_net , String login) {
+    public Demande create(String  Montant_nett , String login) {
+      Double  Montant_net=Double.parseDouble(Montant_nett );
         Demande demande =new Demande();
         if ( Montant_net  == null) {
             throw new NullValueException("Montant_net");

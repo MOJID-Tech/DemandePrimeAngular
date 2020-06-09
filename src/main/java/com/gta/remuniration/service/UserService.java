@@ -1,12 +1,16 @@
 package com.gta.remuniration.service;
 
 
+import com.gta.remuniration.entity.Etat;
 import com.gta.remuniration.entity.User;
 import com.gta.remuniration.exception.*;
 import com.gta.remuniration.repository.UserRepository;
 import com.gta.remuniration.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -40,11 +44,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<User> findAll(int pageIndex, int size) {
 
-       // Pageable pageable = new PageRequest(pageIndex,size);
-      //  return repository.findAll(pageable)
-       //         .map(user -> mapper.mapToDTO(user));
-        return null;
-    }
+        Pageable pageable = (Pageable) PageRequest.of(pageIndex,  size, Sort.Direction.DESC, "login");
+            return repository.findAll(pageable);
+
+        }
 
 
     @Transactional(readOnly = true)
@@ -58,20 +61,18 @@ public class UserService {
     }
 
     @Transactional
-    public User authenticate(User user) {
-        if (user == null) {
-            throw new NullValueException("user");
-        }
-        if (user.getLogin() == null) {
-            throw new NullValueException("user.login");
-        }
-        if (user.getPassword() == null) {
-            throw new NullValueException("user.password");
-        }
-        String username = user.getLogin().toLowerCase();
-        User userDto = findByLogin(username);
+    public User authenticate(String login , String password ) {
 
-        try { authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, user.getPassword()));
+        if (login== null) {
+            throw new NullValueException("login");
+        }
+        if (password == null) {
+            throw new NullValueException("password");
+        }
+
+       User userDto = findByLogin(login);
+
+        try { authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login,password));
             if (!userDto.isActive()) {
                 throw new UserDeactivatedException();
             }
@@ -80,7 +81,7 @@ public class UserService {
             }
 
         } catch (NotFoundException e) {
-            throw new NotFoundException(User.class, LOGIN, user.getLogin());
+            throw new NotFoundException(User.class, LOGIN, login);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException();
         }

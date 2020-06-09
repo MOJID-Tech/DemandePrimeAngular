@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin ("*")
 @RestController
 @RequestMapping(value="/demande")
 public class DemandeController  {
@@ -15,7 +15,8 @@ public class DemandeController  {
     private DemandeService service;
     @PostMapping
    //@RequestMapping(value="/demande",method=RequestMethod.POST)
-    public ResponseEntity<Demande> create( @RequestParam Double MN , @RequestParam  String login) {
+    public ResponseEntity<Demande> create(@RequestParam(required = false) String MN,
+                                          @RequestParam(required = false) String login ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(MN ,login));
     }
 

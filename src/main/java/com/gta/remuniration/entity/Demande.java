@@ -39,11 +39,11 @@ public class Demande implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_fin;
     @Transient
-    @OneToMany(mappedBy = "demande" , fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "demande" ,cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 
     private Set<EtatDemande> etatDemande = new HashSet<EtatDemande>();
 
-    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+    @ManyToOne(cascade=CascadeType.ALL )
 
     @JoinColumn(name = "salarie_id")
     private Salarie salarie;

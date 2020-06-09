@@ -35,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests().anyRequest().permitAll();
-      /* http
+        http.authorizeRequests().anyRequest().permitAll()
+    /*  http
                .cors()
                 .and()
                 .httpBasic().disable()
@@ -47,10 +47,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //public
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll()
                 //private
-               // .antMatchers("/**").hasAuthority("ADMIN")
+                .antMatchers("/**").hasAuthority("ADMIN")
 
-               // .anyRequest().authenticated()
+                .anyRequest().authenticated()*/
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider, userService));*/
+                .apply(new JwtConfigurer(jwtTokenProvider, userService));
     }
 }

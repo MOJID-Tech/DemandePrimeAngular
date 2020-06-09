@@ -19,10 +19,10 @@ public class EtatDemande implements Serializable {
     private Integer id ;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_etat;
-   @ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+   @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="etat_id")
     private Etat etat;
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name="demande_id")
 
     private Demande demande;

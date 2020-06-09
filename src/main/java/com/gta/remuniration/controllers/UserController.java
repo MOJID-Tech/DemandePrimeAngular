@@ -3,21 +3,31 @@ package com.gta.remuniration.controllers;
 import com.gta.remuniration.entity.User;
 import com.gta.remuniration.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController(value = "/users")
+@CrossOrigin ("*")
+@RestController
+@RequestMapping(value="/users")
+
 public class UserController {
 
     @Autowired
-    UserService userService;
+    UserService Service;
+    @GetMapping
+    public ResponseEntity<Page<User>> findAll(
+            @RequestParam(required = false, defaultValue = "0") int pageIndex,
+            @RequestParam(required = false, defaultValue = "6") int size) {
+        return ResponseEntity.status(HttpStatus.OK).body(Service.findAll(pageIndex, size));
+    }
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<User> authenticate(
-            @RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.authenticate(user));
+            @RequestParam(required = false) String login,
+            @RequestParam(required = false) String password) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(Service.authenticate(login,password));
     }
 }

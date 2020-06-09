@@ -70,6 +70,14 @@ public class Role   implements Serializable {
         return User_Role;
     }
 
-
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", code_Role='" + code_Role + '\'' +
+                ", Nom_Role='" + Nom_Role + '\'' +
+                ", User_Role=" + User_Role +
+                '}';
+    }
 }
 
