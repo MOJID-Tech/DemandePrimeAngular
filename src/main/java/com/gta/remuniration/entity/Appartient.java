@@ -18,10 +18,10 @@ public class Appartient implements Serializable {
     private Date date_fin;
     private boolean estrespo;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="equipe_id")
+    @JoinColumn(name="salarie_id")
     private Salarie salarie;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="salarie_id")
+    @JoinColumn(name="equipe_id")
     private  Equipe equipe;
 
     public Appartient() {

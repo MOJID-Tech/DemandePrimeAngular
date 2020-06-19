@@ -1,18 +1,17 @@
 package com.gta.remuniration;
-import com.gta.remuniration.entity.Role;
-import com.gta.remuniration.entity.Salarie;
-import com.gta.remuniration.entity.User;
-import com.gta.remuniration.entity.user_role;
-import com.gta.remuniration.repository.RoleRepository;
-import com.gta.remuniration.repository.SalarieRepository;
-import com.gta.remuniration.repository.UserRepository;
-import com.gta.remuniration.repository.user_roleRepository;
+
+import com.gta.remuniration.entity.BudgetDepartement;
+import com.gta.remuniration.exception.NotFoundException;
+import com.gta.remuniration.repository.*;
+import com.gta.remuniration.service.BudgetDepartService;
+import com.gta.remuniration.service.BudgetEquipeService;
+import com.gta.remuniration.service.DepartementService;
+import com.gta.remuniration.service.EtatDemandeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -35,40 +34,59 @@ public class RemunirationApplication implements CommandLineRunner {
     UserRepository userRepository  ;
     @Autowired
     RoleRepository roleRepository ;
+
     @Autowired
-    user_roleRepository user_roleRepository ;
+    private DepartementService departementService;
+    @Autowired
+    private BudgetDepartementRepository budgetDepartementRepository;
+    @Autowired
+    private BudgetEquipeService budgetEquipeService;
+    @Autowired
+    private BudgetDepartService budgetDepartService;
+    @Autowired
+    private EtatDemandeService etatDemandeService;
+    public RemunirationApplication() {
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(RemunirationApplication.class, args);
     }
     @Override
     public void run(String... arg0)throws Exception{
 
-       /* Salarie salarie = new Salarie("Mojid","fati","fati@gmail.com","0617328612" );
+       /*
+        Salarie salarie = new Salarie("Mojid","fati","fati@gmail.com","0617328612" );
         salarieRepository.save(salarie);
         User user = new User("Mojid","123456");
         userRepository.save(user);
         Role role =new Role("1","Admin");
         roleRepository.save(role);
         user_role userRole = new user_role(user,role);
-        user_roleRepository.save(userRole);*/
-
-
+        user_roleRepository.save(userRole);
+        */
+        Long l=new Long(72);
+       // budgetEquipeService.create("200000","5000000","1");
+       //budgetEquipeService.getByID(l);
     }
-        @Bean
 
-        public WebMvcConfigurer corsConfigurer() {
-            return new WebMvcConfigurerAdapter() {
-                @Override
-                public void addCorsMappings(CorsRegistry registry) {
-                    registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD");
-                }
-            };
-        }
 
-        @Bean
-        public PasswordEncoder passwordEncoder() {
-            return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        }
+    @Bean
+
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD");
+            }
+        };
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+
 
     }
 

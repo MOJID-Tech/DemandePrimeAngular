@@ -68,6 +68,18 @@ public class EtatDemandeService {
             throw new NullValueException(etatDemandeNullFieldList);
         }
     }
+
+
+    public void affichage()
+    {
+        Long a =new Long(72);
+        List<EtatDemande> etatDemandes= repository.findByDemande(a);
+      for(int i=0;i<etatDemandes.size();i++)
+      {
+         System.out.println("etat :"+ etatDemandes.get(i).getEtat() +" date"+etatDemandes.get(i).getDate_etat() +" "+etatDemandes.get(i).getDemande().getId());
+      }
+    }
+
 }
 
 

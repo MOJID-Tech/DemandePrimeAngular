@@ -34,7 +34,8 @@ public class SalarieService {
             throw new NullValueException("login");
         }
        Salarie salarie;
-       return salarie = repository.findByLogin(login)
+
+        return salarie = repository.findByLogin(login)
                .orElseThrow(() -> new NotFoundException(Salarie.class, "login", login));
     }
 }

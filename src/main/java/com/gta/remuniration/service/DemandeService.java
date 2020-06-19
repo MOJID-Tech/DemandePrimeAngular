@@ -48,7 +48,7 @@ public class DemandeService {
         Date datedemande = java.util.Calendar.getInstance().getTime();
         demande.setDate_debut(datedemande);
         Double brutprim= calculateBrutprim(demande.getMontant_net());
-      demande.setMontant_brut(brutprim);
+        demande.setMontant_brut(brutprim);
       Salarie salarie = salarieService.findbylogin(login);
       demande.setSalarie(salarie );
         Double maxPrim = calculateMaxprim(demande.getSalarie());
@@ -113,6 +113,40 @@ public class DemandeService {
         return repository.findByValideM( true);
 
     }
+
+    public List<Demande> getDemandes()
+    {
+
+       // List<Demande> demandes=repository.findAll();
+       /*
+        List<Demande> historiques =null;
+
+        for(int i=0;i<demandes.size();i++) {
+            if(demandes.get(i).getDate_fin()!=null)
+            {
+                historiques.add(demandes.get(i));
+            }
+
+        }
+         */
+        return repository.findDemandes();
+        /*
+
+           List<Demande> demandes=repository.findAll();
+        List<Demande> Historiques = null;
+        for(int i=0;i<demandes.size();i++)
+        {
+            System.out.println(demandes.get(i).getId());
+            if(demandes.get(i).getDate_fin()!=null)
+            {
+                Historiques.add(demandes.get(i));
+            }
+        }
+        return Historiques;
+         */
+    }
+
+
 }
 
 
