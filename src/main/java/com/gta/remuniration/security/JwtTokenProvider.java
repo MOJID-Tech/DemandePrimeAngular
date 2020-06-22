@@ -60,7 +60,7 @@ public class JwtTokenProvider {
         List<String>roles = new ArrayList<String>();
         for (user_role role : user_roles)
         {
-            roles.add(role.getRole().getNom_Role());
+            roles.add(role.getRole().getNomRole());
         }
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();

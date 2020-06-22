@@ -24,6 +24,8 @@ public enum FunctionalErrorCode
     NOTIF_ALREADY_RESPONDED(8, HttpStatus.FOUND, "L'utilisateur %s a déjà répondu à cette notification"),
     WRONG_PASSWORD(9, HttpStatus.UNAUTHORIZED, "Mot de passe incorrecte"),
     FORBIDDEN_ACTION(11, HttpStatus.FORBIDDEN, "Action non autorisée"),
+    EMAIL_NOT_FOUND(15, HttpStatus.NOT_FOUND, "Email non trouvé"),
+    SEND_EMAIL(10, HttpStatus.BAD_REQUEST, "Erreur lors de l'envoie de l'email"),
     BAD_CREDENTIALS(12, HttpStatus.UNAUTHORIZED, "Identifiant ou mot de passe incorrect"),
     DELETE_USED_EVENT(13, HttpStatus.FORBIDDEN, "Suppression impossible car cet événement est utilisé"),
     CREDENTIAL_ALREADY_USED(14, HttpStatus.BAD_REQUEST, "%s existe déjà");

@@ -23,6 +23,13 @@ public class RoleService {
     public Role finfbyid(Integer id ){
         Role role;
         return  role  = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Etat.class, id));
+                .orElseThrow(() -> new NotFoundException(Role.class, id));
+    }
+
+    @Transactional(readOnly = true)
+    public Role finfbyNom(String Nom ){
+        Role role;
+        return  role  = repository.findByNomRole(Nom)
+                .orElseThrow(() -> new NotFoundException(Role.class, "nomRole" , Nom));
     }
 }

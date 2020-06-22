@@ -55,10 +55,20 @@ public class SalarieService {
         if (login == null) {
             throw new NullValueException("login");
         }
-       Salarie salarie;
-       return salarie = repository.findByLogin(login)
-               .
-                       orElseThrow(() -> new NotFoundException(Salarie.class, "login", login));
+        Salarie salarie;
+        return salarie = repository.findByLogin(login)
+                .
+                        orElseThrow(() -> new NotFoundException(Salarie.class, "login", login));
+    }
+    @Transactional(readOnly = true)
+    public Salarie findbyEmail(String email) {
+        if (email == null) {
+            throw new NullValueException("login");
+        }
+        Salarie salarie;
+        return salarie = repository.findByEmailsalarie(email)
+                .
+                        orElseThrow(() -> new NotFoundException(Salarie.class, "email", email));
     }
 
     //benefice Equipe
@@ -192,7 +202,7 @@ public class SalarieService {
         for(Long equipeid : Equipes)
         {
             Equipe equipe = EquipeService.finfbyid(equipeid);
-             totaleContrubition +=((PourcentageContributionparEquipe(idSalarie , equipeid , annee)*(this.PourcentageContributionEquipeParDepartement(equipe.getId(),equipe.getDepartement().getId(),annee))*(this.PourcentageContributionDepartementParSociete(equipe.getDepartement().getId(),equipe.getDepartement().getSociete().getId_societe(),annee)))/10000);
+            totaleContrubition +=((PourcentageContributionparEquipe(idSalarie , equipeid , annee)*(this.PourcentageContributionEquipeParDepartement(equipe.getId(),equipe.getDepartement().getId(),annee))*(this.PourcentageContributionDepartementParSociete(equipe.getDepartement().getId(),equipe.getDepartement().getSociete().getId_societe(),annee)))/10000);
         }
 
         return totaleContrubition ;
@@ -215,14 +225,14 @@ public class SalarieService {
         Double budgetEquipe;
         Double pourcentageContribution = this.PourcentageContributionparEquipe(salarie.getId(),equipe.getId(),annee);
 
-          if (appartientService.estResponsable(true,salarie.getId(),equipe.getId()))
-          {
+        if (appartientService.estResponsable(true,salarie.getId(),equipe.getId()))
+        {
 
-              Integer idbudget=  budgetEquipeService.BudgetEquipe(date11 , equipe.getId());
-              budgetEquipe=budgetEquipeService.finfbyid(idbudget).getMontant_manager();
+            Integer idbudget=  budgetEquipeService.BudgetEquipe(date11 , equipe.getId());
+            budgetEquipe=budgetEquipeService.finfbyid(idbudget).getMontant_manager();
 
-              return  ((budgetEquipe*pourcentageContribution)/100);
-          }
+            return  ((budgetEquipe*pourcentageContribution)/100);
+        }
         Integer idbudget=  budgetEquipeService.BudgetEquipe(date11 , equipe.getId());
         budgetEquipe=budgetEquipeService.finfbyid(idbudget).getMontant_horsmanager();
 

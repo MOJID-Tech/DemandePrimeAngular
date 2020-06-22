@@ -94,7 +94,7 @@ public class User implements UserDetails, Serializable {
         List<String>roles = new ArrayList<String>();
         for (user_role role : getUser_Role())
         {
-            roles.add(role.getRole().getNom_Role());
+            roles.add(role.getRole().getNomRole());
         }
         return  roles;
     }

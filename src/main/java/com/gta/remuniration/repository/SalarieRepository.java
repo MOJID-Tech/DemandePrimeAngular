@@ -18,13 +18,14 @@ public interface SalarieRepository  extends  JpaRepository<Salarie, Long>, JpaSp
     boolean existsById(Long id);
 
     Optional<Salarie> findById(Long id);
+    Optional<Salarie> findByEmailsalarie(String email);
 
 
     Page<Salarie> findAll(Pageable pageable);
 
 
     @Query(value = "select distinct s.* from salarie s left join user u on s.id = u.salarie_id WHERE u.login = :login "
-             ,nativeQuery = true)
+            ,nativeQuery = true)
     Optional<Salarie> findByLogin(@Param("login") String login);
 
 

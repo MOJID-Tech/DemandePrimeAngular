@@ -13,5 +13,5 @@ import java.util.Optional;
 
 public interface RoleRepository extends  JpaRepository< Role, Integer>, JpaSpecificationExecutor< Role>  {
     Optional<Role> findById(Long id);
-
+    Optional<Role> findByNomRole(String Nom);
 }

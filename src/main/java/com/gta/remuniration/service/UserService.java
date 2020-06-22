@@ -1,13 +1,14 @@
 package com.gta.remuniration.service;
 
 
-import com.gta.remuniration.entity.Etat;
-import com.gta.remuniration.entity.Role;
-import com.gta.remuniration.entity.User;
-import com.gta.remuniration.entity.user_role;
+import com.gta.remuniration.entity.*;
 import com.gta.remuniration.exception.*;
+import com.gta.remuniration.log.LogArgumentsAndResult;
+import com.gta.remuniration.utils.UtilisateurHelper;
+import com.gta.remuniration.utils.UtilisateurHelper.*;
 import com.gta.remuniration.repository.UserRepository;
 import com.gta.remuniration.security.JwtTokenProvider;
+import com.gta.remuniration.utils.MailType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +20,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+//import sun.security.ssl.KerberosClientKeyExchange;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -35,7 +38,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-   @Autowired
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -45,20 +48,26 @@ public class UserService {
     private UserRepository repository;
     @Autowired
     private user_roleService user_roleService;
+    @Autowired
+    private SalarieService salarieService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private RoleService roleService;
 
 
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = true)
     public Page<User> findAll(int pageIndex, int size) {
 
         Pageable pageable = (Pageable) PageRequest.of(pageIndex,  size, Sort.Direction.DESC, "login");
-            return repository.findAll(pageable);
+        return repository.findAll(pageable);
 
-        }
+    }
 
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = true)
-      public User findByLogin(String login) {
+    public User findByLogin(String login) {
         if (login == null) {
             throw new NullValueException(login);
         }
@@ -66,7 +75,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, login, login));
         return user;
     }
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = true)
     public User  findById(Integer id) {
         if (id == null) {
@@ -79,7 +88,7 @@ public class UserService {
     }
 
 
-
+    @LogArgumentsAndResult
     @Transactional
     public User authenticate(String login , String password ) {
 
@@ -90,7 +99,7 @@ public class UserService {
             throw new NullValueException("password");
         }
 
-       User userDto = findByLogin(login);
+        User userDto = findByLogin(login);
 
         try { authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login,password));
             if (!userDto.isActive()) {
@@ -104,10 +113,10 @@ public class UserService {
             List<String>roles = new ArrayList<String>();
             for (user_role role : user_roles)
             {
-                roles.add(role.getRole().getNom_Role());
+                roles.add(role.getRole().getNomRole());
             }
 
-          String token= jwtTokenProvider.createToken(login,roles);
+            String token= jwtTokenProvider.createToken(login,roles);
             userDto.setToken(jwtTokenProvider.createToken(login, roles));
 
         } catch (NotFoundException e) {
@@ -126,41 +135,104 @@ public class UserService {
                 .collect(Collectors.toList());
     }*/
 
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = false)
-    public User createUser(User userDTO) {
-        if (repository.findByLogin(userDTO.getLogin()).isPresent()) {
+    public User createUser(String login , String password , String email, String role) {
+        if (login == null) {
+            throw new NullValueException(login);
+        }
+        if (password == null) {
+            throw new NullValueException(password);
+        }
+        if (email == null) {
+            throw new NullValueException(email);
+        }
+        if (role == null) {
+            role = "User";
+        }
+
+        if (repository.findByLogin(login).isPresent()) {
             throw new CredentialAlreadyExistsException("Login");
         }
 
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        userDTO.setLogin(userDTO.getLogin().toLowerCase());
+        Salarie salarie = salarieService.findbyEmail(email);
+        User user = new User();
+        user.setSalarie(salarie);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setLogin(login.toLowerCase());
+        user.setActive(true);
+        User saveduser = repository.save(user);
+        Role Role = roleService.finfbyNom(role);
+        user_role user_role= user_roleService.create(Role ,saveduser);
+        return saveduser;
 
-        return repository.save(userDTO);
     }
 
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = false)
-    public User updateUser(Integer id, User userDTO) {
+    public User updateUser(Integer id,  String login) {
         if (id == null) {
             throw new NullValueException("id");
         }
-        if (userDTO == null) {
-            throw new NullValueException("user");
+        if (login == null) {
+            throw new NullValueException("login");
         }
         User userToUpdate = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException(User.class, userDTO.getId()));
+                .orElseThrow(() -> new NotFoundException(User.class, id));
 
-        if (!userToUpdate.getLogin().equals(userDTO.getLogin()) && repository.findByLogin(userDTO.getLogin()).isPresent()) {
+        if (!userToUpdate.getLogin().equals(login) && repository.findByLogin(login).isPresent()) {
             throw new PropertyAlreadyUsedException(LOGIN);
         }
 
-        userToUpdate.setLogin(userDTO.getLogin().toLowerCase());
-       // userToUpdate.setRole(userDTO.getRole());
+        userToUpdate.setLogin(login.toLowerCase());
+
         return (repository.save(userToUpdate));
     }
 
+    @LogArgumentsAndResult
+    @Transactional(readOnly = false)
+    public User addrole(Integer id,  String role) {
+        if (id == null) {
+            throw new NullValueException("id");
+        }
+        if (role == null) {
+            throw new NullValueException("role");
+        }
+        Role Role = roleService.finfbyNom(role);
+        User userToUpdate = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
 
+        if (user_roleService.finfbyroleAndUser(Role.getId(),userToUpdate.getId())!=null) {
+            throw new PropertyAlreadyUsedException("Role");
+        }
+
+        user_role user_role= user_roleService.create(Role ,userToUpdate );
+
+        return (userToUpdate);
+    }
+    @LogArgumentsAndResult
+    @Transactional(readOnly = false)
+    public Boolean removerole(Integer id,  String role) {
+        if (id == null) {
+            throw new NullValueException("id");
+        }
+        if (role == null) {
+            throw new NullValueException("role");
+        }
+        Role Role = roleService.finfbyNom(role);
+        User userToUpdate = repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
+
+        if (user_roleService.finfbyroleAndUser(Role.getId(),userToUpdate.getId())==null) {
+            throw new NotFoundException(user_role.class, "Role", role);
+        }
+
+        user_roleService.delet(user_roleService.finfbyroleAndUser(Role.getId(),userToUpdate.getId()).getId());
+        return true;
+    }
+
+
+    @LogArgumentsAndResult
     @Transactional(readOnly = false)
     public User setActive(Integer id, boolean isActive) {
         if (id == null) {
@@ -173,7 +245,7 @@ public class UserService {
         return (repository.save(user));
     }
 
-
+    @LogArgumentsAndResult
     @Transactional(readOnly = false)
     public User changePassword(String login, String currentPassword, String newPassword) {
         if (login == null) {
@@ -197,13 +269,19 @@ public class UserService {
 
     }
 
-
-  /*  @Transactional
-    public ValidationEmailDTO resetPassword(Long id, String newPassword) {
+    @LogArgumentsAndResult
+    @Transactional
+    public ValidationEmailDTO resetPassword(Integer id, String newPassword) {
         User user = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, id));
 
-        boolean checkEmailSend = mailService.send(MailType.RESET_PASSWORD, user.getEmail(), new String[]{newPassword});
+        Long id_salarie = repository.findSalarie(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
+
+        Salarie salarie = salarieService.finfbyid(id_salarie);
+        String email= salarie.getEmail_salarie();
+        System.out.println("*******************"+email+"***************************");
+        boolean checkEmailSend = mailService.send(MailType.RESET_PASSWORD, email, new String[]{newPassword});
         if (!checkEmailSend) {
             throw new SendEmailException();
         }
@@ -212,14 +290,15 @@ public class UserService {
         return ValidationEmailDTO.builder().code(200).message("Veuillez vérifier votre boite email").build();
     }
 
-
+    @LogArgumentsAndResult
     @Transactional
-    @SuppressWarnings("squid:S1612")
+
     public ValidationEmailDTO resetPassword(String email) {
-        User utilisateur = repository.findByEmail(email)
+        Salarie salarie = salarieService.findbyEmail(email);
+        User utilisateur = repository.findBySalarieId(salarie.getId())
                 .orElseThrow(() -> new EmailNotFoundException());
 
-        String newPassword = generateRandomPassword();
+        String newPassword = UtilisateurHelper.generateRandomPassword();
         boolean checkEmailSend = mailService.send(MailType.RESET_PASSWORD, email, new String[]{newPassword});
         if (!checkEmailSend) {
             throw new SendEmailException();
@@ -227,7 +306,9 @@ public class UserService {
         utilisateur.setPassword(passwordEncoder.encode(newPassword));
         repository.save(utilisateur);
         return ValidationEmailDTO.builder().code(200).message("Veuillez vérifier votre boite email").build();
-    }*/
+    }
+
+
 
 }
 

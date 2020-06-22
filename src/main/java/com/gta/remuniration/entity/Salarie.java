@@ -20,7 +20,7 @@ public class Salarie  implements Serializable {
     private Long id;
     private String nomsalarie;
     private String prenom_salarie;
-    private String email_salarie;
+    private String emailsalarie;
     private String tel_salarie;
     @Temporal(TemporalType.DATE)
     private Date datenaissance_salarie;
@@ -32,7 +32,7 @@ public class Salarie  implements Serializable {
     private Set<Responsable> responsable = new HashSet<Responsable>();
     @Transient
     @OneToMany(mappedBy = "salarie", fetch = FetchType.LAZY,cascade=CascadeType.ALL)
-     private Set<Appartient>  appartients = new HashSet<Appartient>();
+    private Set<Appartient>  appartients = new HashSet<Appartient>();
     @Transient
     @OneToMany(mappedBy = "salarie", fetch = FetchType.LAZY,cascade=CascadeType.ALL)
     private Set<Demande> demandes = new HashSet<Demande>();
@@ -48,7 +48,7 @@ public class Salarie  implements Serializable {
     public Salarie(String nom_salarie, String prenom_salarie, String email_salarie,String tel_salarie) {
         this.nomsalarie = nom_salarie;
         this.prenom_salarie = prenom_salarie;
-        this.email_salarie = email_salarie;
+        this.emailsalarie = email_salarie;
         this.tel_salarie=tel_salarie;
         //this.datenaissance_salarie=datenaissance_salarie;
     }
@@ -92,7 +92,7 @@ public class Salarie  implements Serializable {
     }
 
     /***************************get/set*************************/
-    
+
     public Long getId() {
         return id;
     }
@@ -118,10 +118,10 @@ public class Salarie  implements Serializable {
 
 
     public String getEmail_salarie() {
-        return email_salarie;
+        return emailsalarie;
     }
     public void setEmail_salarie(String email_salarie) {
-        this.email_salarie = email_salarie;
+        this.emailsalarie = email_salarie;
     }
 
 
@@ -146,7 +146,7 @@ public class Salarie  implements Serializable {
                 "id_salarie=" + id +
                 ", nom_salarie='" + nomsalarie + '\'' +
                 ", prenom_salarie='" + prenom_salarie + '\'' +
-                ", email_salarie='" + email_salarie + '\'' +
+                ", email_salarie='" + emailsalarie + '\'' +
                 ", tel_salarie='" + tel_salarie + '\'' +
                 ", datenaissance_salarie=" + datenaissance_salarie +
                 '}';
