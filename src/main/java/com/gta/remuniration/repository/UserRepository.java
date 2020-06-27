@@ -19,6 +19,8 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
 
     Optional<User> findByLogin(String id);
     Optional<User> findBySalarieId(Long id);
+    Optional<User> findBySalarieIdAndLogin (Long id , String login);
+
     @Query(value = "SELECT salarie_id FROM `user` WHERE id = :id "
             ,nativeQuery = true)
     Optional<Long> findSalarie(@Param("id") Integer id );

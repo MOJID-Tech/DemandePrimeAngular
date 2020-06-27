@@ -58,8 +58,10 @@ public class UserService {
 
     @LogArgumentsAndResult
     @Transactional(readOnly = true)
-    public Page<User> findAll(int pageIndex, int size) {
-
+    public Page<User> findAll(String pageIndex1, String size1) {
+        System.out.println("heloousers");
+         int pageIndex= Integer.parseInt(pageIndex1);
+         int size= Integer.parseInt(size1);
         Pageable pageable = (Pageable) PageRequest.of(pageIndex,  size, Sort.Direction.DESC, "login");
         return repository.findAll(pageable);
 
@@ -137,7 +139,7 @@ public class UserService {
 
     @LogArgumentsAndResult
     @Transactional(readOnly = false)
-    public User createUser(String login , String password , String email, String role) {
+    public User createUser(String login , String password , String email) {
         if (login == null) {
             throw new NullValueException(login);
         }
@@ -147,9 +149,8 @@ public class UserService {
         if (email == null) {
             throw new NullValueException(email);
         }
-        if (role == null) {
+        String role;
             role = "User";
-        }
 
         if (repository.findByLogin(login).isPresent()) {
             throw new CredentialAlreadyExistsException("Login");
@@ -170,23 +171,36 @@ public class UserService {
 
     @LogArgumentsAndResult
     @Transactional(readOnly = false)
-    public User updateUser(Integer id,  String login) {
+    public User updateUser(Integer id,  String login , String password) {
         if (id == null) {
             throw new NullValueException("id");
         }
         if (login == null) {
             throw new NullValueException("login");
         }
+
         User userToUpdate = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, id));
 
         if (!userToUpdate.getLogin().equals(login) && repository.findByLogin(login).isPresent()) {
             throw new PropertyAlreadyUsedException(LOGIN);
         }
-
         userToUpdate.setLogin(login.toLowerCase());
+       User userToUpdate2=repository.save(userToUpdate);
 
-        return (repository.save(userToUpdate));
+
+          if (passwordEncoder.matches(password, userToUpdate2.getPassword())){
+              System.out.println("holaaa  Update");
+            return (repository.save(userToUpdate));
+        }
+        else
+        {
+            resetPassword(id,password);
+            return (repository.save(userToUpdate));
+
+        }
+
+
     }
 
     @LogArgumentsAndResult
@@ -234,14 +248,23 @@ public class UserService {
 
     @LogArgumentsAndResult
     @Transactional(readOnly = false)
-    public User setActive(Integer id, boolean isActive) {
+    public User setActive(Integer id, String isActive1) {
+        Integer active= Integer.parseInt(isActive1);
+        System.out.println(active);
+        Boolean Active;
+        if(active.equals(0))
+        {
+            System.out.println("hello");
+            Active=false;
+        }
+      else {  Active=true;}
         if (id == null) {
             throw new NullValueException("id");
         }
         User user = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException(User.class, id));
 
-        user.setActive(isActive);
+        user.setActive(Active);
         return (repository.save(user));
     }
 
@@ -293,10 +316,13 @@ public class UserService {
     @LogArgumentsAndResult
     @Transactional
 
-    public ValidationEmailDTO resetPassword(String email) {
+    public ValidationEmailDTO resetPassword(String email , String login ) {
         Salarie salarie = salarieService.findbyEmail(email);
-        User utilisateur = repository.findBySalarieId(salarie.getId())
+       /* User utilisateur = repository.findBySalarieId(salarie.getId())
+                .orElseThrow(() -> new EmailNotFoundException());*/
+        User utilisateur = repository.findBySalarieIdAndLogin(salarie.getId() , login)
                 .orElseThrow(() -> new EmailNotFoundException());
+
 
         String newPassword = UtilisateurHelper.generateRandomPassword();
         boolean checkEmailSend = mailService.send(MailType.RESET_PASSWORD, email, new String[]{newPassword});
@@ -306,6 +332,20 @@ public class UserService {
         utilisateur.setPassword(passwordEncoder.encode(newPassword));
         repository.save(utilisateur);
         return ValidationEmailDTO.builder().code(200).message("Veuillez vérifier votre boite email").build();
+    }
+    @LogArgumentsAndResult
+    @Transactional
+    public List<String> getroles (Integer id)
+    {
+        User user = this.findById(id);
+        List<user_role> user_roles  ;
+        user_roles = user_roleService.findbyUserId(user.getId());
+        List<String>roles = new ArrayList<String>();
+        for (user_role role : user_roles)
+        {
+            roles.add(role.getRole().getNomRole());
+        }
+        return roles;
     }
 
 

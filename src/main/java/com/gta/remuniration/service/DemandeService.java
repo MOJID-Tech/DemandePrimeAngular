@@ -134,8 +134,10 @@ public class DemandeService {
     }
     @Transactional(readOnly = false)
     //validation_Manager
-    public void validation_Manager (Integer  id_demande , Double Prim_Manager , Double Prim_DG ) {
+    public void validation_Manager (Integer  id_demande , Double Prim_Manager , Double Prim_DG , Integer annee ) {
         Demande demande = this.finfbyid(id_demande);
+        Salarie salarie = demande.getSalarie();
+        Date datedemande= demande.getDate_debut();
         Date dateSys= new Date() ;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateSys);
@@ -151,6 +153,7 @@ public class DemandeService {
                 demande.setDate_validation(dateSys);
                 demande.setValide_dG(true);
                 demande.setValide_manager(true);
+                salarieService.Consommation(salarie,annee,Prim_DG);
                 Etat validationDG = etatService.finfbyid(5);// etat :validé_par_DG et manager
                 EtatDemande etatDemande1 = new EtatDemande(dateSys, validationDG, demande);
                 etatDemandeService.create(etatDemande1);
@@ -161,7 +164,7 @@ public class DemandeService {
             else {
                 demande.setPrime_manager(Prim_Manager);
                 demande.setValide_dG(false);
-                demande.setValide_dG(true);
+                demande.setValideM(true);
                 Etat revalidationManeger = etatService.finfbyid(3);// etat :revalidé_par_Manager
                 EtatDemande etatDemande2 = new EtatDemande(dateSys, revalidationManeger, demande);
                 etatDemandeService.create(etatDemande2);
@@ -182,15 +185,22 @@ public class DemandeService {
     }
     @Transactional(readOnly = false)
     //validation_DG
-    public void validation_DG (Integer  id_demande , Double Prim_Manager , Double Prim_DG )
+    public void validation_DG (Integer  id_demande , Double Prim_Manager , Double Prim_DG ,  Integer annee  )
     {
         // si le directeur generale a valider une demande c'est à dire qu'il a accepter le prime proposé par le manager
         Demande demande = this.finfbyid(id_demande);
         Date dateSys= new Date() ;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateSys);
-        demande.setPrime_manager(Prim_Manager );
-        demande.setPrime_finale(Prim_Manager );
+        if(demande.getPrime_manager()!=0) {
+            demande.setPrime_manager(Prim_Manager);
+            demande.setPrime_finale(Prim_Manager);
+            salarieService.Consommation(demande.getSalarie(),annee,Prim_Manager);
+        }
+        else {
+            demande.setPrime_finale(demande.getMontant_net());
+            salarieService.Consommation(demande.getSalarie(),annee,demande.getMontant_net());
+        }
         demande.setDate_fin(dateSys);
         demande.setDate_validation(dateSys);
         demande.setValide_dG(true);
@@ -203,7 +213,7 @@ public class DemandeService {
     }
     @Transactional(readOnly = false)
     //refu_manager
-    public void refus_Manager (Integer  id_demande , Double Prim_Manager , Double Prim_DG )
+    public void refus_Manager (Integer  id_demande , Double Prim_Manager , Double Prim_DG , Integer annee  )
     {
         Demande demande = this.finfbyid(id_demande);
         Date dateSys= new Date() ;
@@ -222,7 +232,7 @@ public class DemandeService {
     }
     @Transactional(readOnly = false)
     //refus_DG
-    public void refus_DG (Integer  id_demande , Double Prim_Manager , Double Prim_DG )
+    public void refus_DG (Integer  id_demande , Double Prim_Manager , Double Prim_DG  , Integer annee  )
     {
         Demande demande = this.finfbyid(id_demande);
         Date dateSys= new Date() ;
@@ -248,6 +258,8 @@ public class DemandeService {
             demande.setPrime_pdg(Prim_DG);
 
             demande.setPrime_finale(Prim_DG);
+            salarieService.Consommation(demande.getSalarie(),annee,Prim_DG);
+
             demande.setDate_fin(dateSys);
             demande.setDate_validation(dateSys);
             demande.setValide_dG(true);
@@ -275,39 +287,48 @@ public class DemandeService {
         Double Prim_Manager=Double.parseDouble(Prim_Managerr );
         Double Prim_DG=Double.parseDouble(Prim_DGG );
         User user = userService.findByLogin(Login);
+        Demande demande = this.finfbyid(id_demande);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(demande.getDate_debut());
+        Integer annee = calendar.get(Calendar.YEAR);
 
         //user_role userole = user_roleService.finfbyroleAndUser(5,user.getId());
         //user.getUser_Role().contains("DG");
 
        if(user_roleService.finfbyroleAndUser(5,user.getId())!=null)
        {
-          validation_DG( id_demande , Prim_Manager , Prim_DG );
+          validation_DG( id_demande , Prim_Manager , Prim_DG , annee-1);
           return  true;
        }
-        validation_Manager( id_demande ,  Prim_Manager ,  Prim_DG );
+        validation_Manager( id_demande ,  Prim_Manager ,  Prim_DG  , annee-1);
        return  true;
     }
     @Transactional(readOnly = false)
     //refuser une prime
     public Boolean refuserPrime(Integer  id_demande , String Prim_Managerr , String Prim_DGG ,String Login )
     {
+
         if ( id_demande  == null) {
             throw new NullValueException("id_demande");
         }
         if ( Login  == null) {
             throw new NullValueException("Login");
         }
+        Demande demande = this.finfbyid(id_demande);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(demande.getDate_debut());
+        Integer annee = calendar.get(Calendar.YEAR);
         Double Prim_Manager=Double.parseDouble(Prim_Managerr );
         Double Prim_DG=Double.parseDouble(Prim_DGG );
         User user = userService.findByLogin(Login);
         //user_role userole = user_roleService.finfbyroleAndUser(5,user.getId());
         if(user_roleService.finfbyroleAndUser(5,user.getId())!=null)
         {
-           refus_DG( id_demande ,  Prim_Manager ,  Prim_DG);
+           refus_DG( id_demande ,  Prim_Manager ,  Prim_DG ,annee-1);
            return  true;
         }
 
-         refus_Manager(id_demande ,  Prim_Manager ,  Prim_DG);
+         refus_Manager(id_demande ,  Prim_Manager ,  Prim_DG , annee-1);
         return  true;
     }
 

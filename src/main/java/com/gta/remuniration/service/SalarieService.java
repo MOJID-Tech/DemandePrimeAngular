@@ -240,8 +240,49 @@ public class SalarieService {
 
 
     }
+    @Transactional(readOnly = true)
+    public  Boolean Consommation(Salarie salarie , Integer annee , Double Primfinale)
+    {
+        LocalDate date1= LocalDate.of( annee , 12 , 30);
+        LocalDate date2= LocalDate.of( annee , 01 , 01);
+        String date11 =date1.toString();
+        String date12 =date2.toString();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date3=null;
+        try {
+            date3= df.parse(date11);
+        } catch (ParseException e){}
+        List<Long> Equipes  ;
+        Equipes=appartientService.EquipeActiveparSalarie(date11,date12,salarie.getId());
+        Double budgetEquipe;
+        Double Consomation = 0.0;
+        Double pourcentageContribution ;
+        for(Long equipeid : Equipes) {
+            Equipe equipe1 = EquipeService.finfbyid(equipeid);
+            pourcentageContribution = this.PourcentageContributionparEquipe(salarie.getId(),equipe1.getId(),annee);
+            if (appartientService.estResponsable(true, salarie.getId(), equipe1.getId())) {
+                Integer idbudget = budgetEquipeService.BudgetEquipe(date3, equipe1.getId());
+                budgetEquipe = budgetEquipeService.finfbyid(idbudget).getMontant_manager();
+                Consomation = (Primfinale*pourcentageContribution)/100;
 
+                BudgetEquipe BDE = budgetEquipeService.finfbyid(idbudget);
+                BDE.setConsommation_manager(Consomation+BDE.getConsommation_manager());
+                BDE.getBudgetDepartement().setConsommation(Consomation+ BDE.getBudgetDepartement().getConsommation());
+                BDE.getBudgetDepartement().getBudget().setConsommation(Consomation+ BDE.getBudgetDepartement().getBudget().getConsommation());
+                return true;
+            }
+            Integer idbudget = budgetEquipeService.BudgetEquipe(date3, equipe1.getId());
+            budgetEquipe = budgetEquipeService.finfbyid(idbudget).getMontant_horsmanager();
+            Consomation =( Primfinale*pourcentageContribution)/100;
+            BudgetEquipe BDE = budgetEquipeService.finfbyid(idbudget);
+            BDE.setConsommation_horsmanager(Consomation+BDE.getConsommation_horsmanager());
+            BDE.getBudgetDepartement().setConsommation(Consomation+ BDE.getBudgetDepartement().getConsommation());
+            BDE.getBudgetDepartement().getBudget().setConsommation(Consomation+ BDE.getBudgetDepartement().getBudget().getConsommation());
 
+            return true;
+        }
+        return false ;
+    }
     @Transactional(readOnly = true)
     public Double  PrimeMaxSalarieParSociete  (Long idsalarie , Integer annee ) {
         if (idsalarie == null) {

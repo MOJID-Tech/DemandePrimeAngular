@@ -43,6 +43,8 @@ public class RemunirationApplication implements CommandLineRunner {
     @Override
     public void run(String... arg0)throws Exception{
 
+
+
        /* Salarie salarie = new Salarie("Mojid","fati","fati@gmail.com","0617328612" );
         salarieRepository.save(salarie);
         User user = new User("Mojid","123456");
