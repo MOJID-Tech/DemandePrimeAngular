@@ -2,6 +2,8 @@ package com.gta.remuniration.controllers;
 
 import com.gta.remuniration.entity.Departement;
 import com.gta.remuniration.entity.Equipe;
+import com.gta.remuniration.entity.Salarie;
+import com.gta.remuniration.repository.SalarieRepository;
 import com.gta.remuniration.service.BeneficeService;
 import com.gta.remuniration.service.DepartementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,11 @@ public class DepartementController {
     private DepartementService service;
     @Autowired
     BeneficeService beneficeservice ;
+    @Autowired
+    private SalarieRepository salarieRepository;
+
+
+
     /// Get all departements
     @GetMapping(value = "/ListDepar")
     public ResponseEntity<List<Departement>> demandesDg( ) {
@@ -50,5 +57,27 @@ public class DepartementController {
 
     }
 
+
+    @GetMapping("/team/{id}")
+    public ResponseEntity<List<Salarie>> getTeamsById(@PathVariable(value = "id") Long IDEquipe)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(salarieRepository.findteam(IDEquipe));
+
+    }
+   /*
+    @GetMapping("/membres/{id}")
+    public ResponseEntity<List<Salarie>> getMembresById(@PathVariable(value = "id") Long IDEquipe)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(salarieRepository.findsalaries(IDEquipe));
+
+    }
+
+    @GetMapping("/manager/{id}")
+    public ResponseEntity<List<Salarie>> getManagerById(@PathVariable(value = "id") Long IDEquipe)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(salarieRepository.findManager(IDEquipe));
+
+    }
+*/
 
 }

@@ -31,4 +31,15 @@ public interface AppartientRepository extends JpaRepository<Appartient,Long>,Jpa
     //boolean isEstrespo(Salarie salarie , Equipe equipe);
     Optional< Appartient> findByEstrespoAndSalarieIdAndEquipeId(boolean Estrespo , Long SalarieId , Long EquipeId);
 
+    @Query(value = "select distinct a.* from appartient a inner join salarie s on a.salarie_id = s.id WHERE a.equipe_id = :equipe_id AND a.estrespo=0"
+
+            ,nativeQuery = true)
+    List<Appartient> findsalaries(@Param("equipe_id") Long equipe_id);
+
+    @Query(value = "select distinct a.* from appartient a inner join salarie s on a.salarie_id = s.id WHERE a.equipe_id = :equipe_id AND a.estrespo=1 "
+            ,nativeQuery = true)
+    List<Appartient> findManager(@Param("equipe_id") Long equipe_id);
+
+
+
 }

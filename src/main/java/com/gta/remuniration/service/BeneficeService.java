@@ -2,13 +2,18 @@ package com.gta.remuniration.service;
 import com.gta.remuniration.entity.*;
 import com.gta.remuniration.exception.NotFoundException;
 import com.gta.remuniration.exception.NullValueException;
+import com.gta.remuniration.repository.AppartientRepository;
 import com.gta.remuniration.repository.DemandeRepository;
 import com.gta.remuniration.repository.EtatDemandeRepository;
+import com.gta.remuniration.repository.SalarieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -16,6 +21,12 @@ import java.util.*;
 public class BeneficeService {
 
 
+    @Autowired
+    SalarieRepository salarieRepository;
+    @Autowired
+    SalarieService salarieService;
+    @Autowired
+    AppartientRepository appartientRepository;
 
 
     public Double ChiffreAffaireSalarieparEquipe (Long idSalarie , Long idEquipe , Integer annee ) {
@@ -142,6 +153,7 @@ public class BeneficeService {
         return Beneficede;
     }
 
+
     public Double BeneficeManagerEquipe(Long IDEQUIPE) {
 
         if (IDEQUIPE == null) {
@@ -150,21 +162,76 @@ public class BeneficeService {
 
 
 
-        Long IDSalarie = new Long(1);
-
-        Double beneficeManager;
+        //Long IDSalarie = new Long(1);
+        Double beneficeManager = 0.0;
         Double ChargeManager;
+
         LocalDate currentdate = LocalDate.now();
         int currentYear = currentdate.getYear();
 
-        ChargeManager =(double)(this.ChargeSalarie(IDSalarie,currentYear)/this.ChargeEquipe(IDEQUIPE,currentYear));
-        beneficeManager = this.ChiffreAffaireSalarieparEquipe(IDSalarie,IDEQUIPE,currentYear)-ChargeManager;
+        int annee =currentYear ;
+
+        LocalDate date1= LocalDate.of( annee , 12 , 30);
+        LocalDate date2= LocalDate.of( annee , 01 , 01);
+        String date11 =date1.toString();
+        String date12 =date2.toString();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date3=null;
+        System.out.print("date avant"+date11 + " "+date12);
+        System.out.print(" date "+df);
+        Date date4=null;
+
+
+        try {
+            date3=new SimpleDateFormat("dd/MM/yyyy").parse(date11);
+            System.out.print(" date avec tran"+date3);
+        } catch (ParseException e){
+
+        }
+
+
+        try {
+            date4= df.parse(date12);
+        } catch (ParseException e){
+
+        }
+        System.out.print("date"+date4);
+        System.out.println("hello ");
+         /*
+         List<Appartient> managers = appartientRepository.findManager(IDEQUIPE);
+
+         for(int i=0;i<managers.size();i++)
+         {
+             System.out.println("manager "+managers.get(i).getSalarie().getNom_salarie());
+             Long idsal=managers.get(i).getSalarie().getId();
+
+             beneficeManager = beneficeManager +salarieService.PourcentageContributionparEquipe(idsal,IDEQUIPE,annee);
+         }
+        System.out.println("somme"+beneficeManager);
+        */
+        Long IDSalarie;
+        List<Appartient> managers=appartientRepository.findManager(IDEQUIPE);
+        for(int i=0;i<managers.size();i++)
+        {
+
+            //  System.out.println("manager"+managers.get(i).getSalarie());
+            IDSalarie=managers.get(i).getSalarie().getId();
+            System.out.println("manger"+managers.get(i).getSalarie());
+            beneficeManager = beneficeManager+salarieService.PourcentageContributionparEquipe(IDSalarie,IDEQUIPE,currentYear);
+
+        }
+
+        System.out.println("somme"+beneficeManager);
+
+         /*
+       // beneficeManager = this.ChiffreAffaireSalarieparEquipe(IDSalarie,IDEQUIPE,currentYear)-ChargeManager;
+          */
         return (beneficeManager);
     }
 
 
     public Double BeneficeHorsManagerEquipe(Long IDEQUIPE) {
-
+     /*
         if (IDEQUIPE == null) {
             throw new NullValueException("IDEquipe");
         }
@@ -176,4 +243,26 @@ public class BeneficeService {
         return  (BeneficehorsManager);
     }
 
+    */
+        LocalDate currentdate = LocalDate.now();
+        int currentYear = currentdate.getYear();
+        Double BeneficehorsManager = 0.0;
+        Long IDSalarie;
+        List<Appartient> salaries = appartientRepository.findsalaries(IDEQUIPE);
+        for (int i = 0; i < salaries.size(); i++) {
+
+            //  System.out.println("manager"+managers.get(i).getSalarie());
+            IDSalarie = salaries.get(i).getSalarie().getId();
+            System.out.println("manger" + salaries.get(i).getSalarie());
+            BeneficehorsManager = BeneficehorsManager + salarieService.PourcentageContributionparEquipe(IDSalarie, IDEQUIPE, currentYear);
+
+        }
+
+        System.out.println("somme" + BeneficehorsManager);
+        return  BeneficehorsManager;
+    }
+
 }
+
+
+

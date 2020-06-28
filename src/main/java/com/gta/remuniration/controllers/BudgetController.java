@@ -29,5 +29,10 @@ public class BudgetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(budgetDepartService.getByID(IDdepar));
     }
 
+    @GetMapping("/MontantBudgetDepartement/{id}")
+    public ResponseEntity<Double> getConsommationByIDdepartement(@PathVariable(value = "id") Long IDdepar)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(budgetDepartService.getByID(IDdepar).getMontant());
+    }
 
 }

@@ -43,7 +43,7 @@ public class BudgetEquipeService {
         Double montant_budgeth = Double.parseDouble(BudgetH);
         long nequipe = Long.parseLong(IDEquipe);
         Date datebudget = java.util.Calendar.getInstance().getTime();
-
+        Double consomretire=0.0;
         //  Integer nequipe = Integer.valueOf(IDEquipe);
         if (montant_budgetm == null || montant_budgeth == null ) {
             throw new NullValueException("montant_budget");
@@ -77,19 +77,22 @@ public class BudgetEquipeService {
             bd=budgetequipe.getBudgetDepartement();
             System.out.println("***************UPDATE ROW ***************** ");
             System.out.println("etape 2"+bd.getId()+" mon"+bd.getMontant());
-
+            consomretire=budgetequipe.getMontant_horsmanager()+budgetequipe.getMontant_manager();
+            System.out.println("consommation de budget equuoe "+consomretire);
         }
 
         budgetequipe.setMontant_horsmanager(montant_budgeth);
         budgetequipe.setMontant_manager(montant_budgetm);
 
-        validate(budgetequipe,IDEquipe);
+        validate(budgetequipe,IDEquipe,consomretire);
         System.out.println("etape 3 : validation ");
 
         // calcul de pourcentage
         Double somme_montant = montant_budgeth+montant_budgetm;
+
         // pourcentage Hors Mangaer
         Double pourcentageh =(double)(montant_budgeth/somme_montant);
+
 
         //pourcentage Manager
         Double pourcentagem =(double)(montant_budgetm/somme_montant);
@@ -101,6 +104,10 @@ public class BudgetEquipeService {
         budgetequipe.setPourcentage_horsmanager(pourcentageh);
 
 
+        somme_montant=somme_montant+bd.getConsommation();
+        //modifier somme montant selon udpate
+
+        somme_montant=somme_montant-consomretire;
 
         bd.setConsommation(somme_montant);
         repository.save(budgetequipe);
@@ -114,7 +121,7 @@ public class BudgetEquipeService {
 
 
 
-    private void validate(BudgetEquipe budgetToSave , String IDEquipe) {
+    private void validate(BudgetEquipe budgetToSave , String IDEquipe,Double retire) {
         if (IDEquipe == null) {
             throw new InsufficientRightException();
         }
@@ -131,7 +138,8 @@ public class BudgetEquipeService {
         Double summontant,rest;
         summontant =budgetToSave.getMontant_horsmanager()+budgetToSave.getMontant_manager();
         rest=budgetToSave.getBudgetDepartement().getMontant()-budgetToSave.getBudgetDepartement().getConsommation();
-        if(summontant>=rest)
+        rest=rest+retire;
+        if(summontant>rest)
         {
             throw new MontantDepasseException("Montant Depassé");
 
@@ -168,6 +176,9 @@ public class BudgetEquipeService {
 
         return null;
     }
+
+
+
 
 
     @Transactional(readOnly = true)
