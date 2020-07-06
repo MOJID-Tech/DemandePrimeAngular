@@ -33,12 +33,14 @@ public class Demande implements Serializable {
     private Double prime_manager;
     private Boolean    valideM ;
     private Boolean    valideDG ;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date_validation;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date_debut;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date date_fin;
+
+
     @Transient
     @OneToMany(mappedBy = "demande" ,cascade=CascadeType.ALL,fetch=FetchType.LAZY)
 

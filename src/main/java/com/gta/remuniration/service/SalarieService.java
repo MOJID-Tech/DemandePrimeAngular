@@ -138,8 +138,14 @@ public class SalarieService {
             throw new NullValueException("NombreEquipeActive");
         }
         /***********************!!!!!!!!!!!refus de demande ********************************************/
+
+        System.out.println("chiffre affaire"+(beneficeService.ChiffreAffaireSalarieparEquipe(idSalarie,idEquipe,annee)));
+        System.out.println("chiffre affaire"+(beneficeService.ChargeSalarie(idSalarie,annee)));
+        System.out.println("nombre active"+NombreEquipeActive);
         Double BeneficeSalarieparEquipe = ((beneficeService.ChiffreAffaireSalarieparEquipe(idSalarie,idEquipe,annee))-(beneficeService.ChargeSalarie(idSalarie,annee)/(NombreEquipeActive)));
+        System.out.println("benefice salarie par Equie"+BeneficeSalarieparEquipe);
         Double BeneficeEquipe =( beneficeService.ChiffreAffaireEquipe(idEquipe, annee))-(beneficeService.ChargeEquipe(idEquipe, annee));
+        System.out.println("benefice Equie"+BeneficeEquipe);
         return ((BeneficeSalarieparEquipe*100)/BeneficeEquipe);
     }
     //pourcentage contribution d'un equipe par raport au departemet

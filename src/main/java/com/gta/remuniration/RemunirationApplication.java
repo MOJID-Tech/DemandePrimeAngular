@@ -1,12 +1,11 @@
 package com.gta.remuniration;
-import com.gta.remuniration.entity.Role;
-import com.gta.remuniration.entity.Salarie;
-import com.gta.remuniration.entity.User;
-import com.gta.remuniration.entity.user_role;
+import com.gta.remuniration.entity.*;
 import com.gta.remuniration.repository.RoleRepository;
 import com.gta.remuniration.repository.SalarieRepository;
 import com.gta.remuniration.repository.UserRepository;
 import com.gta.remuniration.repository.user_roleRepository;
+import com.gta.remuniration.service.BeneficeService;
+import com.gta.remuniration.service.DemandeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.List;
 
 
 @SpringBootApplication
@@ -37,14 +38,19 @@ public class RemunirationApplication implements CommandLineRunner {
     RoleRepository roleRepository ;
     @Autowired
     user_roleRepository user_roleRepository ;
+    @Autowired
+    BeneficeService beneficeService;
+    @Autowired
+    DemandeService demandeService;
     public static void main(String[] args) {
         SpringApplication.run(RemunirationApplication.class, args);
     }
     @Override
     public void run(String... arg0)throws Exception{
 
-
-
+    //Long a =new Long(4);
+   // Double b=beneficeService.BeneficeHorsManagerEquipe(a);
+    // List<Demande> demandes=demandeService.getDemandes();
        /* Salarie salarie = new Salarie("Mojid","fati","fati@gmail.com","0617328612" );
         salarieRepository.save(salarie);
         User user = new User("Mojid","123456");

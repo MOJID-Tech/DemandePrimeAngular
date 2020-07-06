@@ -56,6 +56,7 @@ public class DemandeService {
         if ( Montant_net  == null) {
             throw new NullValueException("Montant_net");
         }
+        System.out.println("avanttt");
         demande.setMontant_net(Montant_net);
        demande.setPrime_finale(0.0);
        demande.setPrime_pdg(0.0);
@@ -63,7 +64,11 @@ public class DemandeService {
        demande.setPrime_manager(0.0);
        demande.setValide_dG(false);
        demande.setValideM(false);
-        validate(demande,login);
+       System.out.println("apres");
+
+       validate(demande,login);
+       System.out.print("demande"+login);
+       System.out.println(login);
         //Date datedemande = java.util.Calendar.getInstance().getTime();
        Date datedemande= new Date() ;
        Calendar calendar = Calendar.getInstance();
@@ -71,13 +76,15 @@ public class DemandeService {
        Integer annee = calendar.get(Calendar.YEAR);
         demande.setDate_debut(datedemande);
         demande.setMontant_brut(null);
+
       Salarie salarie = salarieService.findbylogin(login);
       //test sur l'anne et est ce  salarie a deja pris un prime
-      demande.setSalarie(salarie );
+         demande.setSalarie(salarie);
         Double maxPrim = salarieService.PrimeMaxSalarieParSociete(demande.getSalarie().getId(), annee-1);
         demande.setPrime_maximale(maxPrim);
         Double pourcentage = salarieService.PourcentageContributionparSociete(demande.getSalarie().getId(), annee-1);
         demande.setPourcentageContribution(pourcentage);
+         System.out.println("avant etat");
         Etat etat  = etatService.finfbyid(1);
 
        demande= repository.save(demande);
@@ -338,20 +345,22 @@ public class DemandeService {
     {
 
 
-        return repository.findAll();
-        // List<Demande> demandes=repository.findAll();
-       /*
-        List<Demande> historiques =null;
+        //return repository.findAll();
+         List<Demande> demandes=repository.findDemandes();
+       // List<Demande> historiques;
 
         for(int i=0;i<demandes.size();i++) {
-            if(demandes.get(i).getDate_fin()!=null)
-            {
-                historiques.add(demandes.get(i));
-            }
+          //  if(demandes.get(i).getDate_fin()!=null)
+           // {
+          //      historiques.add(demandes.get(i));
+                System.out.println("demande"+demandes.get(i));
+            //}
 
-        }
+          }
+        return demandes;
 
-
+       ///return historiques;
+        /*
        List<Demande> demandes=repository.findAll();
         List<Demande> Historiques = null;
         for(int i=0;i<demandes.size();i++)
@@ -364,6 +373,7 @@ public class DemandeService {
         }
         return Historiques;
          */
+
     }
 
 }

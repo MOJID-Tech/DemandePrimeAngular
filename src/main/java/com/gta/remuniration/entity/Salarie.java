@@ -101,29 +101,29 @@ public class Salarie  implements Serializable {
         this.id = id;
     }
 
-    public String getNom_salarie() {
+    public String getNomsalarie() {
         return nomsalarie;
     }
-    public void setNom_salarie(String nom_salarie) {
-        this.nomsalarie = nom_salarie;
-    }
 
+    public void setNomsalarie(String nomsalarie) {
+        this.nomsalarie = nomsalarie;
+    }
 
     public String getPrenom_salarie() {
         return prenom_salarie;
     }
-    public void setPrenom_salarie(String lastName) {
+
+    public void setPrenom_salarie(String prenom_salarie) {
         this.prenom_salarie = prenom_salarie;
     }
 
-
-    public String getEmail_salarie() {
+    public String getEmailsalarie() {
         return emailsalarie;
     }
-    public void setEmail_salarie(String email_salarie) {
-        this.emailsalarie = email_salarie;
-    }
 
+    public void setEmailsalarie(String emailsalarie) {
+        this.emailsalarie = emailsalarie;
+    }
 
     public String getTel_salarie() {
         return tel_salarie;

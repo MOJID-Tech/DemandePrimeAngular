@@ -71,7 +71,7 @@ public class UserController {
     }
 
 
-    /*
+
 
 
     @PutMapping(value = "/changepassword")
@@ -85,8 +85,6 @@ public class UserController {
     public ResponseEntity<ValidationEmailDTO> resetPassword(@PathVariable Integer id, @RequestBody UserChangePasswordDTO user) {
         return ResponseEntity.status(HttpStatus.OK).body(Service.resetPassword(id, user.getNewPassword()));
     }
-    */
-
     @PostMapping("/reset-password")
     public ResponseEntity<ValidationEmailDTO> resetPassword2(@RequestParam String email,@RequestParam String login) {
         return ResponseEntity.status(HttpStatus.OK).body(Service.resetPassword(email , login));

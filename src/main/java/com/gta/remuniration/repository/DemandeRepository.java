@@ -21,7 +21,7 @@ public interface DemandeRepository extends JpaRepository<Demande, Integer>, JpaS
     List<Demande> findByValideM(boolean valide_manager);
     List<Demande> findByValideDG(boolean valide_dg);
 
-    @Query(value = "select distinct d.* from  demande as d WHERE   (cast( :d.date_fin as timestamp ) is not null) "
+    @Query(value = "select distinct d.* from  demande as d WHERE  d.date_fin  is not null "
             ,nativeQuery = true)
     List<Demande> findDemandes();
 

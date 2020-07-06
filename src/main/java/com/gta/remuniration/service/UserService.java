@@ -195,7 +195,7 @@ public class UserService {
         }
         else
         {
-            resetPassword(id,password);
+            //resetPassword(id,password);
             return (repository.save(userToUpdate));
 
         }
@@ -302,7 +302,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(User.class, id));
 
         Salarie salarie = salarieService.finfbyid(id_salarie);
-        String email= salarie.getEmail_salarie();
+        String email= salarie.getEmailsalarie();
         System.out.println("*******************"+email+"***************************");
         boolean checkEmailSend = mailService.send(MailType.RESET_PASSWORD, email, new String[]{newPassword});
         if (!checkEmailSend) {
@@ -320,7 +320,8 @@ public class UserService {
         Salarie salarie = salarieService.findbyEmail(email);
        /* User utilisateur = repository.findBySalarieId(salarie.getId())
                 .orElseThrow(() -> new EmailNotFoundException());*/
-        User utilisateur = repository.findBySalarieIdAndLogin(salarie.getId() , login)
+
+  User utilisateur = repository.findBySalarieIdAndLogin(salarie.getId() , login)
                 .orElseThrow(() -> new EmailNotFoundException());
 
 
@@ -332,7 +333,9 @@ public class UserService {
         utilisateur.setPassword(passwordEncoder.encode(newPassword));
         repository.save(utilisateur);
         return ValidationEmailDTO.builder().code(200).message("Veuillez vérifier votre boite email").build();
+
     }
+
     @LogArgumentsAndResult
     @Transactional
     public List<String> getroles (Integer id)

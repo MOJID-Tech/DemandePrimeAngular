@@ -30,6 +30,8 @@ public class BeneficeService {
 
 
     public Double ChiffreAffaireSalarieparEquipe (Long idSalarie , Long idEquipe , Integer annee ) {
+        Double ChiffreSalarie[] = {0.0,500.0,500.0,500.0,700.0,700.0,550.0,500.0,500.0,550.0,360.0,300.0,340.0};
+
         if (idSalarie == null) {
             throw new NullValueException("idSalarie");
         }
@@ -43,10 +45,12 @@ public class BeneficeService {
         Random r = new Random();
         int valeur = 0 + r.nextInt(50 - 0);
 
-
-        return ((double)100);
+        return ChiffreSalarie[Math.toIntExact(idSalarie)];
+        //return ((double)100);
     }
     public Double ChiffreAffaireEquipe (Long idEquipe, Integer annee ) {
+        Double ChiffreDepartement[] = {0.0,2600.0,2400.0,2000.0,2400.0,3500.0,5500.0};
+
         if (idEquipe == null) {
             throw new NullValueException("idEquipe");
         }
@@ -58,10 +62,13 @@ public class BeneficeService {
         Random r = new Random();
         int valeur = 50 + r.nextInt(100 - 50);
 
-
-        return ((double)1000);
+        return ChiffreDepartement[Math.toIntExact(idEquipe)];
+       // return ((double)1000);
     }
     public Double ChiffreAffaireDepartement(Long idDepartement, Integer annee ) {
+
+        Double ChiffreDepartement[] = {0.0,8000.0,5000.0,4000.0,4500.0,3500.0,5500.0};
+
         if (idDepartement == null) {
             throw new NullValueException("idDepartement");
         }
@@ -72,8 +79,8 @@ public class BeneficeService {
         Random r = new Random();
         int valeur = 100 + r.nextInt(1000 - 100);
 
+        return ChiffreDepartement[Math.toIntExact(idDepartement)];
 
-        return ((double)3000);
     }
     public Double ChiffreAffaireSociete(Long idSociete ,Integer annee ) {
         if (idSociete == null) {
@@ -83,6 +90,8 @@ public class BeneficeService {
             throw new NullValueException("annee");
         }
         // taritemnt
+
+
         return (40000.0);
     }
     /*******************/
@@ -95,7 +104,7 @@ public class BeneficeService {
         }
 
         // taritemnt
-        return (50.0);
+        return (100.0);
     }
     public Double ChargeEquipe (Long idEquipe, Integer annee ) {
         if (idEquipe == null) {
@@ -106,7 +115,7 @@ public class BeneficeService {
             throw new NullValueException("annee");
         }
         // taritemnt
-        return (100.0);
+        return (600.0);
     }
     public Double  ChargeDepartement(Long idDepartement, Integer annee ) {
         if (idDepartement == null) {
@@ -214,10 +223,10 @@ public class BeneficeService {
         for(int i=0;i<managers.size();i++)
         {
 
-            //  System.out.println("manager"+managers.get(i).getSalarie());
             IDSalarie=managers.get(i).getSalarie().getId();
             System.out.println("manger"+managers.get(i).getSalarie());
             beneficeManager = beneficeManager+salarieService.PourcentageContributionparEquipe(IDSalarie,IDEQUIPE,currentYear);
+            System.out.println("manager"+managers.get(i).getSalarie()+"pourcentage"+beneficeManager);
 
         }
 
@@ -255,6 +264,7 @@ public class BeneficeService {
             IDSalarie = salaries.get(i).getSalarie().getId();
             System.out.println("manger" + salaries.get(i).getSalarie());
             BeneficehorsManager = BeneficehorsManager + salarieService.PourcentageContributionparEquipe(IDSalarie, IDEQUIPE, currentYear);
+            System.out.println("Salarie "+salaries.get(i).getSalarie()+"pourcentage "+BeneficehorsManager);
 
         }
 

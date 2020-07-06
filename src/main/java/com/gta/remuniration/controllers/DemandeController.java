@@ -100,4 +100,12 @@ public class DemandeController  {
         return ResponseEntity.status(HttpStatus.CREATED).body(etatDemandeRepository.findByDemande(IDdemande));
 
     }
+
+
+    @GetMapping (value = "/historique")
+    //@RequestMapping(value="/demande/DG",method=RequestMethod.POST)
+    public ResponseEntity<List<Demande>> gethistorique( ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.getDemandes());
+    }
+
 }
